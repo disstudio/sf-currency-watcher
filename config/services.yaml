@@ -4,6 +4,14 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    privatbank.default_cours_id: 5
+    privatbank.endpoint_url: 'https://api.privatbank.ua/p24api/pubinfo'
+
+    monobank.endpoint_url: 'https://api.monobank.ua/bank/currency'
+
+    file_store.path: '%kernel.project_dir%/var/rates.json'
+
+    notification_email: '%env(NOTIFICATION_EMAIL)%'
 
 services:
     # default configuration for services in *this* file
@@ -19,3 +27,34 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+
+    # === Available providers ===
+
+    app.provider.privatbank:
+        class: App\ExchangeRate\Provider\PrivatBank
+        arguments:
+            $name: 'privatbank'
+            $defaultCoursId: '%privatbank.default_cours_id%'
+            $endpointUrl: '%privatbank.endpoint_url%'
+    
+    app.provider.monobank:
+        class: App\ExchangeRate\Provider\MonoBank
+        arguments:
+            $name: 'monobank'
+            $endpointUrl: '%monobank.endpoint_url%'
+    
+    # ===========================
+    
+    App\Service\ExchangeRateWatcher:
+        arguments:
+            $providers:
+                privatbank: '@app.provider.privatbank'
+                monobank: '@app.provider.monobank'
+            $notificationEmail: '%notification_email%'
+
+    App\ExchangeRate\Store\FileStore:
+        arguments:
+            $filePath: '%file_store.path%'
+
+    # Implementation that we use to store exchange rates
+    App\ExchangeRate\Store\StoreInterface: '@App\ExchangeRate\Store\FileStore'
