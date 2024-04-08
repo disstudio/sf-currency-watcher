@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+    sfcw_php:
+        container_name: sfcw_php
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        working_dir: /var/www
+        tty: true
+        volumes:
+            - ./:/var/www
