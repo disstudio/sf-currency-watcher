@@ -6,7 +6,7 @@ services:
         build:
             context: ./
             dockerfile: Dockerfile
-        working_dir: /var/www
+        working_dir: /usr/src/app
         tty: true
         volumes:
-            - ./:/var/www
+            - ./src:/usr/src/app/src

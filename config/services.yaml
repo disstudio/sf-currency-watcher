@@ -30,6 +30,8 @@ services:
 
     # === Available providers ===
 
+    # TODO: add compiler pass to auto inject name argument
+
     app.provider.privatbank:
         class: App\ExchangeRate\Provider\PrivatBank
         arguments:

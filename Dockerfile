@@ -2,8 +2,8 @@ FROM php:8.2.0-cli
 
 RUN apt update && \
     apt install --no-install-recommends -y \
-    vim \
     git \
+    vim \
     openssl \
     libcurl4-openssl-dev \
     libxslt-dev \
@@ -23,5 +23,5 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 WORKDIR /usr/src/app
 COPY ./ /usr/src/app
 
-RUN composer install --no-scripts
+RUN composer install --no-scripts --no-interaction
 RUN chmod -R ug+x ./bin
