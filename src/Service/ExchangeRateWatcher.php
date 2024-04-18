@@ -23,7 +23,7 @@ class ExchangeRateWatcher
     )
     {}
 
-    public function watch(CurrencyCode $currencyCode, float $rateThreshold): array
+    public function watch(CurrencyCode $currencyCode, float $rateThreshold, bool $forceSend = false): array
     {
         $messages = [];
 
@@ -40,7 +40,7 @@ class ExchangeRateWatcher
                 );
             }
 
-            if($diff->getDiffSell() > $rateThreshold) {
+            if($forceSend || ($diff->getDiffSell() > $rateThreshold)) {
                 $messages[] = sprintf('Provider %s: sell rate changed for %.2f (%s => %s)',
                     $provider->getName(), $diff->getDiffSell(),
                     $this->formatRate($diff->getOldRate()?->getRateSell()),
@@ -53,7 +53,7 @@ class ExchangeRateWatcher
             try {
                 $this->sendNotification($messages);
             } catch(Exception $ex) {
-                $messages[] = 'Error while sending notifications';
+                $messages[] = sprintf('Error while sending notifications: %s', $ex->getMessage());
             }
         }
 

@@ -29,7 +29,8 @@ class CurrencyRateWatchCommand extends Command
     {
         $this
             ->addArgument('currency_code', InputArgument::REQUIRED, 'Currency name (USD/EUR etc.)')
-            ->addOption('rate_threshold', 't', InputOption::VALUE_REQUIRED, 'If rate changed above this thresholdm notification will be sent', .0)
+            ->addOption('rate_threshold', 't', InputOption::VALUE_REQUIRED, 'If rate changed above this threshold, notification will be sent', .0)
+            ->addOption('force_send', 'f', InputOption::VALUE_NONE, 'Display and send rate diff regardless of threshold')
             ->setHelp(
                 'This command pulls currency exchange rate from different providers ' .
                 'and checks if it changed above specified threshold. ' .
@@ -54,7 +55,7 @@ class CurrencyRateWatchCommand extends Command
                 throw new Exception(sprintf('Invalid currency code: %s', $input->getArgument('currency_code')));
             }
             
-            $messages = $this->exchangeRateWatcher->watch($currencyCode, (float) $input->getOption('rate_threshold'));
+            $messages = $this->exchangeRateWatcher->watch($currencyCode, (float) $input->getOption('rate_threshold'), (bool) $input->getOption('force_send'));
             if(count($messages)) {
                 $output->write($messages, true);
             } else {

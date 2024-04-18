@@ -11,7 +11,18 @@ Use **docker-compose** to build and run container
 docker-compose up
 ```
 
-Create file `.env.local` with your local parameters. For example:
+### Configuration
+
+
+Create file `.env.local` with your local parameters.
+
+You may use provided example file:
+
+```
+cp .env.local.example .env.local
+```
+
+Or create file with your own configuration. For example:
 
 ```
 NOTIFICATION_EMAIL=disstudio1990@gmail.com
